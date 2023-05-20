@@ -30,6 +30,12 @@ class GoogleMapsPlacePicker extends StatefulWidget {
   /// the color of the search container
   final Color searchContainerColor;
 
+  /// the opacity of the search container
+  final double searchContainerOpacity;
+
+  /// the amount of blur
+  final double searchContainerImageFilterBlur;
+
   /// the animation duration for the search container's resizing
   final Duration? searchContainerAnimationDuration;
 
@@ -70,6 +76,8 @@ class GoogleMapsPlacePicker extends StatefulWidget {
     required this.onBackPressed,
     required this.onCompletePressed,
     this.searchContainerColor = Colors.orange,
+    this.searchContainerOpacity = 0.5,
+    this.searchContainerImageFilterBlur = 15,
     this.searchContainerAnimationDuration,
     this.searchContainerDefaultHeight = 100,
     this.searchContainerExtraHeight = 55,
@@ -145,47 +153,54 @@ class _GoogleMapsPlacePickerState extends State<GoogleMapsPlacePicker> {
               markers: controller.selectedLocationMarker,
               onTap: controller.onMapTapped,
             ),
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-              child: AnimatedContainer(
-                duration: widget.searchContainerAnimationDuration ??
-                    _defaultTransitionDuration,
-                height: height,
-                width: double.infinity,
-                child: Card(
-                  color: widget.searchContainerColor.withOpacity(0.5),
-                  margin: EdgeInsets.zero,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                  ),
-                  elevation: 15,
-                  child: Padding(
-                    padding: widget.searchContainerContentPadding,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            widget.selectedLocationSubtitle,
-                            style: widget.selectedLocationSubtitleTextStyle,
+            ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: widget.searchContainerImageFilterBlur,
+                  sigmaY: widget.searchContainerImageFilterBlur,
+                ),
+                child: AnimatedContainer(
+                  duration: widget.searchContainerAnimationDuration ??
+                      _defaultTransitionDuration,
+                  height: height,
+                  width: double.infinity,
+                  child: Card(
+                    color: widget.searchContainerColor.withOpacity(
+                      widget.searchContainerOpacity,
+                    ),
+                    margin: EdgeInsets.zero,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    elevation: 15,
+                    child: Padding(
+                      padding: widget.searchContainerContentPadding,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(
+                              widget.selectedLocationSubtitle,
+                              style: widget.selectedLocationSubtitleTextStyle,
+                            ),
                           ),
-                        ),
-                        GoogleMapsPlacePickerSearchField(
-                          controller: controller,
-                          apiKey: widget.apiKey,
-                          selectedLocationTitleTextStyle:
-                              widget.selectedLocationTitleTextStyle,
-                          selectedLocationTitleCursorColor:
-                              widget.selectedLocationTitleCursorColor,
-                        ),
-                        GoogleMapsPlacePickerResults(
-                          controller: controller,
-                          results: results,
-                          selectedLocationResultTextStyle:
-                              widget.selectedLocationResultTextStyle,
-                        ),
-                      ],
+                          GoogleMapsPlacePickerSearchField(
+                            controller: controller,
+                            apiKey: widget.apiKey,
+                            selectedLocationTitleTextStyle:
+                                widget.selectedLocationTitleTextStyle,
+                            selectedLocationTitleCursorColor:
+                                widget.selectedLocationTitleCursorColor,
+                          ),
+                          GoogleMapsPlacePickerResults(
+                            controller: controller,
+                            results: results,
+                            selectedLocationResultTextStyle:
+                                widget.selectedLocationResultTextStyle,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
