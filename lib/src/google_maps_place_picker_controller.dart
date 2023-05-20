@@ -3,9 +3,22 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker/src/google_maps_place_picker_location.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
 /// controller for [GoogleMapsPlacePicker]
 class GoogleMapsPlacePickerController {
+  /// call in main function
+  static void initialise() {
+    final GoogleMapsFlutterPlatform mapsImplementation =
+        GoogleMapsFlutterPlatform.instance;
+    if (mapsImplementation is GoogleMapsFlutterAndroid) {
+      // reduce crashes https://github.com/flutter/flutter/issues/105965#issuecomment-1543373885
+      mapsImplementation.useAndroidViewSurface = false;
+      mapsImplementation.initializeWithRenderer(AndroidMapRenderer.latest);
+    }
+  }
+
   /// update this on widget init
   late final Function rebuildGoogleMapsPlacePickerWidget;
 
