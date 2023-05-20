@@ -1,7 +1,5 @@
 library google_maps_place_picker;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/google_maps_place_picker.dart';
+export 'src/google_maps_place_picker_location.dart';
+export 'package:google_maps_flutter/google_maps_flutter.dart';
